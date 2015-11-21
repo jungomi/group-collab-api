@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 var http = require ('http');
 var mongoose = require('mongoose');
 var uristring =
-    process.env.MONGOLAB_URI ||
-    process.env.MONGOHQ_URL ||
-    'mongodb://localhost/GroupCollab';
+  process.env.MONGOLAB_URI ||
+  process.env.MONGOHQ_URL ||
+  'mongodb://localhost/GroupCollab';
 
 var theport = process.env.PORT || 5000;
 
