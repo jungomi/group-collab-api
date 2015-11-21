@@ -18,8 +18,7 @@ var UserSchema = new Schema({
   lastName: String
 });
 
-// Update password
-UserSchema.pre('save', function(callback) {
+function updatePassword(callback) {
   var user = this;
   if (!user.isModified('password')) return callback();
 
@@ -32,7 +31,8 @@ UserSchema.pre('save', function(callback) {
       callback();
     });
   });
-});
+};
+UserSchema.pre('save', updatePassword);
 
 UserSchema.methods.verifyPassword = function(password, callback) {
   bcrypt.compare(password, this.password, function(err, isMatch) {
