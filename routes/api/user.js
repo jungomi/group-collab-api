@@ -11,7 +11,7 @@ module.exports.addUser = function(req, res) {
   });
 };
 
-module.exports.getAllUsers = function(req, res) {
+module.exports.getUsers = function(req, res) {
   User.find(function(err, users) {
     if (err) {
       res.send(err);
@@ -20,7 +20,7 @@ module.exports.getAllUsers = function(req, res) {
   });
 };
 
-module.exports.getSingleUser = function(req, res, id) {
+module.exports.getUser = function(req, res, id) {
   User.findById(id, function(err, user) {
     if (err) {
       res.send(err);

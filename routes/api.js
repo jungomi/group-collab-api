@@ -9,13 +9,13 @@ router.route('/users')
     users.addUser(req,res)
   })
   .get(function(req,res) {
-    users.getAllUsers(req,res)
+    users.getUsers(req,res)
   });
 
 /* Single user routes */
 router.route('/users/:user_id')
   .get(function(req, res) {
-    users.getSingleUser(req, res, req.params.user_id)
+    users.getUser(req, res, req.params.user_id)
   })
   .put(function(req, res) {
     users.updateUser(req, res, req.params.user_id)
