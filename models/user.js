@@ -16,6 +16,12 @@ var UserSchema = new Schema({
   email: String,
   firstName: String,
   lastName: String
+},
+{
+  timestamps: {
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  }
 });
 
 function updatePassword(callback) {
