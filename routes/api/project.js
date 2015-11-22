@@ -45,7 +45,7 @@ module.exports.getProject = function(req, res, id) {
 module.exports.updateProject = function(req, res, id) {
   Project
     .findById(id)
-    .populate('owner')
+    .populate('owner members')
     .exec(function(err, project) {
       if (err) return res.send(err);
       if (project.owner.username !== req.user.username) return res.sendStatus(401);
@@ -66,6 +66,42 @@ module.exports.deleteProject = function(req, res, id) {
       if (project.owner.username !== req.user.username) return res.sendStatus(401);
       project.remove();
       res.sendStatus(200);
+    });
+};
+
+module.exports.joinProject = function(req, res, id) {
+  Project
+    .findById(id)
+    .populate('members')
+    .exec(function(err, project) {
+      if (err) return res.send(err);
+      if (_.some(project.members, 'username', req.user.username)) {
+        return res.send('Already joined');
+      }
+      project.members.push(req.user);
+      project.save(function(err) {
+        if (err) return res.send(err);
+        res.sendStatus(200);
+      });
+    });
+};
+
+module.exports.leaveProject = function(req, res, id) {
+  Project
+    .findById(id)
+    .populate('members')
+    .exec(function(err, project) {
+      if (err) return res.send(err);
+      var isMember = _.some(project.members, 'username', req.user.username);
+      if (!isMember) return res.send('Not member');
+      _.remove(project.members, function(user) {
+        return user.username === req.user.username;
+      });
+      project.markModified('members');
+      project.save(function(err) {
+        if (err) return res.send(err);
+        res.sendStatus(200);
+      });
     });
 };
 

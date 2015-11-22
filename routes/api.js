@@ -47,5 +47,15 @@ router.route('/projects/:project_id')
     projects.deleteProject(req, res, req.params.project_id)
   });
 
+router.route('/projects/:project_id/join')
+  .post(auth.authenticate, function(req,res) {
+    projects.joinProject(req, res, req.params.project_id)
+  });
+
+router.route('/projects/:project_id/leave')
+  .delete(auth.authenticate, function(req,res) {
+    projects.leaveProject(req, res, req.params.project_id)
+  });
+
 module.exports = router;
 
