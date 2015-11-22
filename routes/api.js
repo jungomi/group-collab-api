@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var users = require('./api/user');
+var projects = require('./api/project');
 var auth = require('../controllers/auth');
 
 /* User routes */
@@ -23,6 +24,27 @@ router.route('/users/:user_id')
   })
   .delete(auth.authenticate, function(req, res) {
     users.deleteUser(req, res, req.params.user_id)
+  });
+
+/* Project routes */
+router.route('/projects')
+  .post(auth.authenticate, function(req,res) {
+    projects.addProject(req,res)
+  })
+  .get(auth.authenticate, function(req,res) {
+    projects.getProjects(req,res)
+  });
+
+/* Single project routes */
+router.route('/projects/:project_id')
+  .get(auth.authenticate, function(req, res) {
+    projects.getProject(req, res, req.params.project_id)
+  })
+  .put(auth.authenticate, function(req, res) {
+    projects.updateProject(req, res, req.params.project_id)
+  })
+  .delete(auth.authenticate, function(req, res) {
+    projects.deleteProject(req, res, req.params.project_id)
   });
 
 module.exports = router;
