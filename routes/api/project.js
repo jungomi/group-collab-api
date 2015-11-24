@@ -41,7 +41,7 @@ module.exports.getProject = function(req, res, id, next) {
       if (err) {
         return next(err);
       }
-      if (project === null) return res.sendStatus(404);
+      if (!project) return res.sendStatus(404);
       if (isProjectVisible(project, req.user)) {
           return res.json({project: project});
       }
@@ -57,7 +57,7 @@ module.exports.updateProject = function(req, res, id, next) {
       if (err) {
         return next(err);
       }
-      if (project === null) return res.sendStatus(404);
+      if (!project) return res.sendStatus(404);
       if (project.owner.username !== req.user.username) return res.sendStatus(403);
       project = _.extend(project, req.body.project);
       project.save(function(err) {
@@ -77,7 +77,7 @@ module.exports.deleteProject = function(req, res, id, next) {
       if (err) {
         return next(err);
       }
-      if (project === null) return res.sendStatus(404);
+      if (!project) return res.sendStatus(404);
       if (project.owner.username !== req.user.username) return res.sendStatus(403);
       project.remove();
       res.sendStatus(200);
@@ -92,7 +92,7 @@ module.exports.joinProject = function(req, res, id, next) {
       if (err) {
         return next(err);
       }
-      if (project === null) return res.sendStatus(404);
+      if (!project) return res.sendStatus(404);
       if (_.some(project.members, 'username', req.user.username)) {
         return res.send('Already joined');
       }
@@ -114,7 +114,7 @@ module.exports.leaveProject = function(req, res, id, next) {
       if (err) {
         return next(err);
       }
-      if (project === null) return res.sendStatus(404);
+      if (!project) return res.sendStatus(404);
       var isMember = _.some(project.members, 'username', req.user.username);
       if (!isMember) return res.send('Not member');
       _.remove(project.members, function(user) {

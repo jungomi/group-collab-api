@@ -27,7 +27,7 @@ module.exports.getUser = function(req, res, id, next) {
     if (err) {
       return next(err);
     }
-    if (user === null) return res.sendStatus(404);
+    if (!user) return res.sendStatus(404);
     res.json({user: user});
   });
 };
@@ -37,7 +37,7 @@ module.exports.updateUser = function(req, res, id, next) {
     if (err) {
       return next(err);
     }
-    if (user === null) return res.sendStatus(404);
+    if (!user) return res.sendStatus(404);
     if (user.username !== req.user.username) return res.sendStatus(403);
     user = _.extend(user, req.body.user);
     user.save(function(err) {
@@ -55,7 +55,7 @@ module.exports.deleteUser = function(req, res, id, next) {
     if (err) {
       return next(err);
     }
-    if (user === null) return res.sendStatus(404);
+    if (!user) return res.sendStatus(404);
     if (user.username !== req.user.username) return res.sendStatus(403);
     user.remove();
     res.sendStatus(200);
