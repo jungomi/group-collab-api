@@ -38,7 +38,7 @@ module.exports.getProject = function(req, res, id) {
       if (isProjectVisible(project, req.user)) {
           return res.json({project: project});
       }
-      res.sendStatus(401);
+      res.sendStatus(403);
     });
 };
 
@@ -48,7 +48,7 @@ module.exports.updateProject = function(req, res, id) {
     .populate('owner members')
     .exec(function(err, project) {
       if (err) return res.send(err);
-      if (project.owner.username !== req.user.username) return res.sendStatus(401);
+      if (project.owner.username !== req.user.username) return res.sendStatus(403);
       project = _.extend(project, req.body.project);
       project.save(function(err) {
         if (err) return res.send(err);
@@ -63,7 +63,7 @@ module.exports.deleteProject = function(req, res, id) {
     .populate('owner')
     .exec(function(err, project) {
       if (err) return res.send(err);
-      if (project.owner.username !== req.user.username) return res.sendStatus(401);
+      if (project.owner.username !== req.user.username) return res.sendStatus(403);
       project.remove();
       res.sendStatus(200);
     });
