@@ -5,6 +5,11 @@ var users = require('./api/user');
 var projects = require('./api/project');
 var auth = require('../controllers/auth');
 
+router.route('/authenticate')
+  .get(auth.authenticate, function(req, res) {
+    res.sendStatus(200);
+  });
+
 /* User routes */
 router.route('/users')
   .post(function(req,res) {
