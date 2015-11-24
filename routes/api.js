@@ -6,60 +6,60 @@ var projects = require('./api/project');
 var auth = require('../controllers/auth');
 
 router.route('/authenticate')
-  .get(auth.authenticate, function(req, res) {
+  .get(auth.authenticate, function(req, res, next) {
     res.sendStatus(200);
   });
 
 /* User routes */
 router.route('/users')
-  .post(function(req,res) {
-    users.addUser(req,res)
+  .post(function(req, res, next) {
+    users.addUser(req, res, next)
   })
-  .get(function(req,res) {
-    users.getUsers(req,res)
+  .get(function(req, res, next) {
+    users.getUsers(req, res, next)
   });
 
 /* Single user routes */
 router.route('/users/:user_id')
-  .get(function(req, res) {
-    users.getUser(req, res, req.params.user_id)
+  .get(function(req, res, next) {
+    users.getUser(req, res, req.params.user_id, next)
   })
-  .put(auth.authenticate, function(req, res) {
-    users.updateUser(req, res, req.params.user_id)
+  .put(auth.authenticate, function(req, res, next) {
+    users.updateUser(req, res, req.params.user_id, next)
   })
-  .delete(auth.authenticate, function(req, res) {
-    users.deleteUser(req, res, req.params.user_id)
+  .delete(auth.authenticate, function(req, res, next) {
+    users.deleteUser(req, res, req.params.user_id, next)
   });
 
 /* Project routes */
 router.route('/projects')
-  .post(auth.authenticate, function(req,res) {
-    projects.addProject(req,res)
+  .post(auth.authenticate, function(req, res, next) {
+    projects.addProject(req,res, next)
   })
-  .get(auth.authenticate, function(req,res) {
-    projects.getProjects(req,res)
+  .get(auth.authenticate, function(req, res, next) {
+    projects.getProjects(req,res, next)
   });
 
 /* Single project routes */
 router.route('/projects/:project_id')
-  .get(auth.authenticate, function(req, res) {
-    projects.getProject(req, res, req.params.project_id)
+  .get(auth.authenticate, function(req, res, next) {
+    projects.getProject(req, res, req.params.project_id, next)
   })
-  .put(auth.authenticate, function(req, res) {
-    projects.updateProject(req, res, req.params.project_id)
+  .put(auth.authenticate, function(req, res, next) {
+    projects.updateProject(req, res, req.params.project_id, next)
   })
-  .delete(auth.authenticate, function(req, res) {
-    projects.deleteProject(req, res, req.params.project_id)
+  .delete(auth.authenticate, function(req, res, next) {
+    projects.deleteProject(req, res, req.params.project_id, next)
   });
 
 router.route('/projects/:project_id/join')
-  .post(auth.authenticate, function(req,res) {
-    projects.joinProject(req, res, req.params.project_id)
+  .post(auth.authenticate, function(req, res, next) {
+    projects.joinProject(req, res, req.params.project_id, next)
   });
 
 router.route('/projects/:project_id/leave')
-  .delete(auth.authenticate, function(req,res) {
-    projects.leaveProject(req, res, req.params.project_id)
+  .delete(auth.authenticate, function(req,res, next) {
+    projects.leaveProject(req, res, req.params.project_id, next)
   });
 
 module.exports = router;
