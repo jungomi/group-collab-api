@@ -11,11 +11,11 @@ var Project = new Schema({
     default: true
   },
   owner: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
   members: [{
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }]
 },
