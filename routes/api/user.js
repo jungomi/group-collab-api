@@ -22,6 +22,16 @@ module.exports.getUsers = function(req, res, next) {
   });
 };
 
+module.exports.getUserByName = function(req, res, name, next) {
+  User.findOne({ username: name }, function(err, user) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) return res.sendStatus(404);
+    return res.json({user: user});
+  });
+};
+
 module.exports.getUser = function(req, res, id, next) {
   User.findById(id, function(err, user) {
     if (err) {

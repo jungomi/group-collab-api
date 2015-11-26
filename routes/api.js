@@ -11,7 +11,7 @@ function isIdValid(id) {
 
 router.route('/authenticate')
   .get(auth.authenticate, function(req, res, next) {
-    res.sendStatus(200);
+    users.getUserByName(req, res, req.user.username, next);
   });
 
 /* User routes */
