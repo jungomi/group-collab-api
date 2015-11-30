@@ -4,6 +4,7 @@ var router = express.Router();
 var users = require('./api/user');
 var projects = require('./api/project');
 var tasks = require('./api/task');
+var notes = require('./api/note');
 var auth = require('../controllers/auth');
 
 function isIdValid(id) {
@@ -161,6 +162,62 @@ router.route('/projects/:project_id/tasks/:task_id/leave')
       return res.sendStatus(404);
     }
     tasks.leaveTask(req, res, req.params.task_id, req.params.project_id, next);
+  });
+
+/* Note routes */
+router.route('/notes')
+  .get(auth.authenticate, function(req, res, next) {
+    notes.getNotes(req, res, null, next);
+  });
+
+router.route('/projects/:project_id/notes')
+  .post(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id)) return res.sendStatus(404);
+    notes.addNote(req, res, req.params.project_id, null, next);
+  })
+  .get(auth.authenticate, function(req, res, next) {
+    notes.getNotes(req, res, req.params.project_id, null, next);
+  });
+
+/* Single note routes */
+router.route('/notes/:note_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.getNote(req, res, req.params.note_id, null, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.updateNote(req, res, req.params.note_id, null, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.deleteNote(req, res, req.params.note_id, null, next);
+  });
+
+router.route('/projects/:project_id/notes/:note_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.getNote(req, res, req.params.note_id, req.params.project_id, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.updateNote(req, res, req.params.project_id, req.params.note_id, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.note_id)) {
+      return res.sendStatus(404);
+    }
+    notes.deleteNote(req, res, req.params.note_id, req.project_id, next);
   });
 
 module.exports = router;
