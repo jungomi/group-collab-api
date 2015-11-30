@@ -123,13 +123,13 @@ router.route('/projects/:project_id/tasks/:task_id')
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
       return res.sendStatus(404);
     }
-    tasks.updateTask(req, res, req.params.project_id, req.params.task_id, next);
+    tasks.updateTask(req, res, req.params.task_id, req.params.project_id, next);
   })
   .delete(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
       return res.sendStatus(404);
     }
-    tasks.deleteTask(req, res, req.params.task_id, req.project_id, next);
+    tasks.deleteTask(req, res, req.params.task_id, req.params.project_id, next);
   });
 
 router.route('/tasks/:task_id/join')
@@ -211,13 +211,13 @@ router.route('/projects/:project_id/notes/:note_id')
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.note_id)) {
       return res.sendStatus(404);
     }
-    notes.updateNote(req, res, req.params.project_id, req.params.note_id, next);
+    notes.updateNote(req, res, req.params.note_id, req.params.project_id, next);
   })
   .delete(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.note_id)) {
       return res.sendStatus(404);
     }
-    notes.deleteNote(req, res, req.params.note_id, req.project_id, next);
+    notes.deleteNote(req, res, req.params.note_id, req.params.project_id, next);
   });
 
 module.exports = router;
