@@ -144,7 +144,7 @@ module.exports.deleteTask = function(req, res, task_id, project_id, next) {
           return next(err);
         }
         if (!isProjectVisible(task.project, req.user)
-          || task.project.owner.username !== req.user.username) {
+          || task.owner.username !== req.user.username) {
           return next(forbidden);
         }
         task.remove(function(err) {

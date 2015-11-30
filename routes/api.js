@@ -116,7 +116,7 @@ router.route('/projects/:project_id/tasks/:task_id')
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
       return res.sendStatus(404);
     }
-    tasks.getTask(req, res, req.params.project_id, req.params.task_id, next);
+    tasks.getTask(req, res, req.params.task_id, req.params.project_id, next);
   })
   .put(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
