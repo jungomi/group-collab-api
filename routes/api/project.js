@@ -14,7 +14,12 @@ module.exports.addProject = function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.status(201).json({project: project});
+    Project.populate(project, 'owner members', function(err, project) {
+      if (err) {
+        return next(err);
+      }
+      res.status(201).json({ project: project });
+    });
   });
 };
 

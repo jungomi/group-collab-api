@@ -30,7 +30,13 @@ module.exports.addTask = function(req, res, project_id, next) {
         if (err) {
           return next(err);
         }
-        return res.status(201).json({task: task});
+        Task.populate(task, 'owner', function(err, task) {
+          if (err) {
+            return next(err);
+          }
+          task.project = project;
+          return res.status(201).json({ task: task });
+        });
       });
     });
 };

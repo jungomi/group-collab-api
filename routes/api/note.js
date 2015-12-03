@@ -30,7 +30,13 @@ module.exports.addNote = function(req, res, project_id, next) {
         if (err) {
           return next(err);
         }
-        return res.status(201).json({note: note});
+        Note.populate(note, 'owner', function(err, note) {
+          if (err) {
+            return next(err);
+          }
+          note.project = project;
+          return res.status(201).json({ note: note });
+        });
       });
     });
 };

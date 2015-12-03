@@ -74,7 +74,10 @@ module.exports.addComment = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.status(201).json({comment: comment});
+          Comment.populate(comment, 'user', function(err, comment) {
+            comment.task = task;
+            return res.status(201).json({ comment: comment });
+          });
         });
       });
     });
