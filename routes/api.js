@@ -5,6 +5,7 @@ var users = require('./api/user');
 var projects = require('./api/project');
 var tasks = require('./api/task');
 var notes = require('./api/note');
+var comments = require('./api/comment');
 var auth = require('../controllers/auth');
 
 function isIdValid(id) {
@@ -218,6 +219,124 @@ router.route('/projects/:project_id/notes/:note_id')
       return res.sendStatus(404);
     }
     notes.deleteNote(req, res, req.params.note_id, req.params.project_id, next);
+  });
+
+/* Comment routes */
+router.route('/comments')
+  .get(auth.authenticate, function(req, res, next) {
+    comments.getComments(req, res, null, null, next);
+  });
+
+router.route('/tasks/:task_id/comments')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.task_id)) return next(notFound);
+    comments.getComments(req, res, req.params.task_id, null, next);
+  });
+
+router.route('/projects/:project_id/comments')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id)) return next(notFound);
+    comments.getComments(req, res, null, req.params.project_id, next);
+  });
+
+router.route('/projects/:project_id/tasks/:task_id/comments')
+  .post(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
+      return res.sendStatus(404);
+    }
+    comments.addComment(req, res, req.params.task_id, req.params.project_id, next);
+  })
+  .get(auth.authenticate, function(req, res, next) {
+    console.log(req.params);
+    console.log(!isIdValid(req.params.project_id));
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id)) {
+      return res.sendStatus(404);
+    }
+    comments.getComments(req, res, req.params.task_id, req.params.project_id, next);
+  });
+
+/* Single comment routes */
+router.route('/comments/:comment_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.getComment(req, res, req.params.comment_id, null, null, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.updateComment(req, res, req.params.comment_id, null, null, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.deleteComment(req, res, req.params.comment_id, null, null, next);
+  });
+
+router.route('/tasks/:task_id/comments/:comment_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.task_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.getComment(req, res, req.params.comment_id, req.params.task_id, null, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.task_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.updateComment(req, res, req.params.comment_id, req.params.task_id, null, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.task_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.deleteComment(req, res, req.params.comment_id, req.params.task_id, null, next);
+  });
+
+router.route('/projects/:project_id/comments/:comment_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.getComment(req, res, req.params.comment_id, null, req.params.project_id, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.updateComment(req, res, req.params.comment_id, null, req.params.project_id, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.deleteComment(req, res, req.params.comment_id, null, req.params.project_id, next);
+  });
+
+router.route('/projects/:project_id/tasks/:task_id/comments/:comment_id')
+  .get(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id) ||
+        !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.getComment(req, res, req.params.comment_id, req.params.task_id, req.params.project_id, next);
+  })
+  .put(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id) ||
+        !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.updateComment(req, res, req.params.comment_id, req.params.task_id, req.params.project_id, next);
+  })
+  .delete(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.project_id) || !isIdValid(req.params.task_id) ||
+        !isIdValid(req.params.comment_id)) {
+      return res.sendStatus(404);
+    }
+    comments.deleteComment(req, res, req.params.comment_id, req.params.task_id, req.params.project_id, next);
   });
 
 module.exports = router;
