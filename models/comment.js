@@ -8,7 +8,7 @@ var Comment = new Schema({
   },
   text: String,
   user: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
   date: {

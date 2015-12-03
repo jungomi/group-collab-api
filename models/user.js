@@ -37,7 +37,7 @@ function updatePassword(callback) {
       callback();
     });
   });
-};
+}
 User.pre('save', updatePassword);
 
 User.methods.verifyPassword = function(password, callback) {

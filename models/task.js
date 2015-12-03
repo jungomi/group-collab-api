@@ -8,7 +8,7 @@ var Task = new Schema({
   },
   text: String,
   owner: {
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   },
   date: {
@@ -17,7 +17,7 @@ var Task = new Schema({
   },
   deadline: Date,
   assignedUsers: [{
-    type: String,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }],
   color: String,
