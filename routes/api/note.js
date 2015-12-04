@@ -114,8 +114,9 @@ module.exports.updateNote = function(req, res, note_id, project_id, next) {
         if (err) {
           return next(err);
         }
-        if (!isProjectVisible(note.project, req.user)
-          || note.project.owner.username !== req.user.username) {
+        if (!isProjectVisible(note.project, req.user) ||
+            (note.project.owner.username !== req.user.username &&
+             note.owner.username !== req.user.username)) {
           return next(forbidden);
         }
         note = _.extend(note, req.body.note);
@@ -149,8 +150,9 @@ module.exports.deleteNote = function(req, res, note_id, project_id, next) {
         if (err) {
           return next(err);
         }
-        if (!isProjectVisible(note.project, req.user)
-          || note.owner.username !== req.user.username) {
+        if (!isProjectVisible(note.project, req.user) ||
+            (note.project.owner.username !== req.user.username &&
+             note.owner.username !== req.user.username)) {
           return next(forbidden);
         }
         note.remove(function(err) {

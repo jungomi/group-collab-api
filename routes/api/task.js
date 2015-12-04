@@ -114,8 +114,9 @@ module.exports.updateTask = function(req, res, task_id, project_id, next) {
         if (err) {
           return next(err);
         }
-        if (!isProjectVisible(task.project, req.user)
-          || task.project.owner.username !== req.user.username) {
+        if (!isProjectVisible(task.project, req.user) ||
+            (task.project.owner.username !== req.user.username &&
+             task.owner.username !== req.user.username)) {
           return next(forbidden);
         }
         task = _.extend(task, req.body.task);
@@ -149,8 +150,9 @@ module.exports.deleteTask = function(req, res, task_id, project_id, next) {
         if (err) {
           return next(err);
         }
-        if (!isProjectVisible(task.project, req.user)
-          || task.owner.username !== req.user.username) {
+        if (!isProjectVisible(task.project, req.user) ||
+            (task.project.owner.username !== req.user.username &&
+             task.owner.username !== req.user.username)) {
           return next(forbidden);
         }
         task.remove(function(err) {

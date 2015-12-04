@@ -139,7 +139,8 @@ module.exports.updateComment = function(req, res, comment_id, task_id, project_i
           return next(notFound);
         }
         if (!isProjectVisible(comment.task.project, req.user) ||
-            comment.user.username !== req.user.username) {
+            (comment.task.project.owner.username !== req.user.username &&
+             comment.user.username !== req.user.username)) {
           return next(forbidden);
         }
         comment = _.extend(comment, req.body.comment);
@@ -169,7 +170,8 @@ module.exports.deleteComment = function(req, res, comment_id, task_id, project_i
           return next(notFound);
         }
         if (!isProjectVisible(comment.task.project, req.user) ||
-            comment.user.username !== req.user.username) {
+            (comment.task.project.owner.username !== req.user.username &&
+             comment.user.username !== req.user.username)) {
           return next(forbidden);
         }
         comment.remove(function(err) {
