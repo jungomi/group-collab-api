@@ -86,7 +86,7 @@ router.route('/tasks')
 router.route('/projects/:project_id/tasks')
   .post(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.project_id)) return res.sendStatus(404);
-    tasks.addTask(req, res, req.params.project_id, null, next);
+    tasks.addTask(req, res, req.params.project_id, next);
   })
   .get(auth.authenticate, function(req, res, next) {
     tasks.getTasks(req, res, req.params.project_id, null, next);
