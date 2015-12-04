@@ -85,7 +85,7 @@ module.exports.deleteProject = function(req, res, id, next) {
       if (!project) return res.sendStatus(404);
       if (project.owner.username !== req.user.username) return res.sendStatus(403);
       project.remove();
-      res.sendStatus(200);
+      res.sendStatus(204);
     });
 };
 

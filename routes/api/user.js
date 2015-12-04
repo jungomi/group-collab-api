@@ -68,7 +68,7 @@ module.exports.deleteUser = function(req, res, id, next) {
     if (!user) return res.sendStatus(404);
     if (user.username !== req.user.username) return res.sendStatus(403);
     user.remove();
-    res.sendStatus(200);
+    res.sendStatus(204);
   });
 };
 

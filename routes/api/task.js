@@ -235,7 +235,7 @@ module.exports.leaveTask = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.sendStatus(200);
+          return res.sendStatus(204);
         });
       });
     });

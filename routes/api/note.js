@@ -159,7 +159,7 @@ module.exports.deleteNote = function(req, res, note_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.sendStatus(200);
+          return res.sendStatus(204);
         });
       });
     });

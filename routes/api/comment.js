@@ -178,7 +178,7 @@ module.exports.deleteComment = function(req, res, comment_id, task_id, project_i
           if (err) {
             return next(err);
           }
-          return res.sendStatus(200);
+          return res.sendStatus(204);
         });
       });
     });
