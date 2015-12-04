@@ -13,8 +13,8 @@ var alreadyJoined = new Error('Already joined');
 alreadyJoined.status = 409;
 
 function isProjectVisible(project, user) {
-  return project.isPublic || project.owner.username === user.username
-    || _.some(project.members, 'username', user.username);
+  return project.isPublic || project.owner.username === user.username ||
+    _.some(project.members, 'username', user.username);
 }
 
 module.exports.addTask = function(req, res, project_id, next) {
@@ -43,7 +43,7 @@ module.exports.addTask = function(req, res, project_id, next) {
 
 module.exports.getTasks = function(req, res, project_id, next) {
   var filter = {};
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .find(filter)
     .populate('owner assignedUsers project')
@@ -64,11 +64,11 @@ module.exports.getTasks = function(req, res, project_id, next) {
         return res.json({ tasks: tasks });
       });
     });
-}
+};
 
 module.exports.getTask = function(req, res, task_id, project_id, next) {
   var filter = { _id: task_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -92,11 +92,11 @@ module.exports.getTask = function(req, res, task_id, project_id, next) {
         return next(forbidden);
       });
     });
-}
+};
 
 module.exports.updateTask = function(req, res, task_id, project_id, next) {
   var filter = { _id: task_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -132,7 +132,7 @@ module.exports.updateTask = function(req, res, task_id, project_id, next) {
 
 module.exports.deleteTask = function(req, res, task_id, project_id, next) {
   var filter = { _id: task_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -167,7 +167,7 @@ module.exports.deleteTask = function(req, res, task_id, project_id, next) {
 
 module.exports.joinTask = function(req, res, task_id, project_id, next) {
   var filter = { _id: task_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -204,7 +204,7 @@ module.exports.joinTask = function(req, res, task_id, project_id, next) {
 
 module.exports.leaveTask = function(req, res, task_id, project_id, next) {
   var filter = { _id: task_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Task
     .findOne(filter)
     .populate('owner assignedUsers project')

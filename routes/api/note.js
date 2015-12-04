@@ -13,8 +13,8 @@ var alreadyJoined = new Error('Already joined');
 alreadyJoined.status = 409;
 
 function isProjectVisible(project, user) {
-  return project.isPublic || project.owner.username === user.username
-    || _.some(project.members, 'username', user.username);
+  return project.isPublic || project.owner.username === user.username ||
+    _.some(project.members, 'username', user.username);
 }
 
 module.exports.addNote = function(req, res, project_id, next) {
@@ -43,7 +43,7 @@ module.exports.addNote = function(req, res, project_id, next) {
 
 module.exports.getNotes = function(req, res, project_id, next) {
   var filter = {};
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Note
     .find(filter)
     .populate('owner assignedUsers project')
@@ -64,11 +64,11 @@ module.exports.getNotes = function(req, res, project_id, next) {
         return res.json({ notes: notes });
       });
     });
-}
+};
 
 module.exports.getNote = function(req, res, note_id, project_id, next) {
   var filter = { _id: note_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Note
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -92,11 +92,11 @@ module.exports.getNote = function(req, res, note_id, project_id, next) {
         return next(forbidden);
       });
     });
-}
+};
 
 module.exports.updateNote = function(req, res, note_id, project_id, next) {
   var filter = { _id: note_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Note
     .findOne(filter)
     .populate('owner assignedUsers project')
@@ -132,7 +132,7 @@ module.exports.updateNote = function(req, res, note_id, project_id, next) {
 
 module.exports.deleteNote = function(req, res, note_id, project_id, next) {
   var filter = { _id: note_id };
-  if (project_id) filter['project'] = project_id;
+  if (project_id) filter.project = project_id;
   Note
     .findOne(filter)
     .populate('owner assignedUsers project')

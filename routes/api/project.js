@@ -3,8 +3,8 @@ var mongoose = require('mongoose');
 var Project = require('../../models/project');
 
 function isProjectVisible(project, user) {
-  return project.isPublic || project.owner.username === user.username
-    || _.some(project.members, 'username', user.username);
+  return project.isPublic || project.owner.username === user.username ||
+    _.some(project.members, 'username', user.username);
 }
 
 module.exports.addProject = function(req, res, next) {
