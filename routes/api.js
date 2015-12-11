@@ -174,10 +174,10 @@ router.route('/notes')
 router.route('/projects/:project_id/notes')
   .post(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.project_id)) return res.sendStatus(404);
-    notes.addNote(req, res, req.params.project_id, null, next);
+    notes.addNote(req, res, req.params.project_id, next);
   })
   .get(auth.authenticate, function(req, res, next) {
-    notes.getNotes(req, res, req.params.project_id, null, next);
+    notes.getNotes(req, res, req.params.project_id, next);
   });
 
 /* Single note routes */
