@@ -14,10 +14,12 @@ var uristring =
   'mongodb://localhost/GroupCollab';
 
 mongoose.connect(uristring, function (err, res) {
-  if (err) {
-    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
-  } else {
-    console.log ('Successfully connected to: ' + uristring);
+  if (process.env.NODE_ENV !== 'test') {
+    if (err) {
+      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+    } else {
+      console.log ('Successfully connected to: ' + uristring);
+    }
   }
 });
 
@@ -26,7 +28,9 @@ var api = require('./routes/api');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev'));
+}
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -48,7 +52,9 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function errorHandlerDev(err, req, res, next) {
     res.status(err.status || 500);
-    console.error(err.stack);
+    if (process.env.NODE_ENV !== 'test') {
+      console.error(err.stack);
+    }
     res.send(err.stack);
   });
 }
@@ -57,7 +63,9 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function errorHandler(err, req, res, next) {
   res.status(err.status || 500);
-  console.error(err.stack);
+  if (process.env.NODE_ENV !== 'test') {
+    console.error(err.stack);
+  }
   res.send(err.message);
 });
 
