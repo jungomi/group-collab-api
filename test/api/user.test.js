@@ -103,21 +103,13 @@ describe('/users/:user_id', function() {
     app.set('port', port);
     server = http.createServer(app);
     server.listen(port);
-    done();
-  });
-
-  after(function() {
-    server.close();
-  });
-
-  before(function(done) {
     user.save(function(err) {
       if (err) {
         return done(err);
       }
       id = user._id;
-      done();
     });
+    done();
   });
 
   after(function(done) {
@@ -128,8 +120,9 @@ describe('/users/:user_id', function() {
       if (err) {
         return done(err);
       }
-      done();
     });
+    server.close();
+    done();
   });
 
   describe('GET', function() {
