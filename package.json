@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "./node_modules/mocha/bin/mocha test --recursive -R spec"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -19,5 +20,10 @@
     "passport": "^0.3.2",
     "passport-http": "^0.3.0",
     "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "chai": "3.4.1",
+    "mocha": "2.3.4",
+    "superagent": "1.5.0"
   }
 }
