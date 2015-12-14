@@ -116,7 +116,7 @@ describe('/users/:user_id', function() {
     if (!User.findById(id)) {
       return done();
     }
-    User.remove({ username: username }, function(err) {
+    User.remove({ _id: id }, function(err) {
       if (err) {
         return done(err);
       }
@@ -161,6 +161,8 @@ describe('/users/:user_id', function() {
       it('returns an error', function(done) {
         request
           .put(url + '/123')
+          .auth(username, password)
+          .send(payload)
           .end(function(err, res) {
             expect(err).to.exist;
             done();
@@ -176,6 +178,46 @@ describe('/users/:user_id', function() {
             .send(payload)
             .end(function(err, res) {
               expect(err).to.exist;
+              done();
+            });
+        });
+      });
+
+      describe('when trying to edit another user', function() {
+        var anotherId;
+        var anotherUser = new User({ username: 'anotheruser',
+                                     password: password });
+
+        before(function(done) {
+          anotherUser.save(function(err) {
+            if (err) {
+              return done(err);
+            }
+            anotherId = anotherUser._id;
+          });
+          done();
+        });
+
+        after(function(done) {
+          if (!User.findById(anotherId)) {
+            return done();
+          }
+          User.remove({ _id: anotherId }, function(err) {
+            if (err) {
+              return done(err);
+            }
+          });
+          done();
+        });
+
+        it('returns a forbidden error', function(done) {
+          request
+            .put(url + '/' + anotherId)
+            .auth(username, password)
+            .send(payload)
+            .end(function(err, res) {
+              expect(err).to.exist;
+              expect(err).to.have.property('status', 403);
               done();
             });
         });
@@ -236,6 +278,45 @@ describe('/users/:user_id', function() {
             .end(function(err, res) {
               expect(err).to.exist;
               expect(err).to.have.property('status', 401);
+              done();
+            });
+        });
+      });
+
+      describe('when trying to edit another user', function() {
+        var anotherId;
+        var anotherUser = new User({ username: 'anotheruser',
+                                     password: password });
+
+        before(function(done) {
+          anotherUser.save(function(err) {
+            if (err) {
+              return done(err);
+            }
+            anotherId = anotherUser._id;
+          });
+          done();
+        });
+
+        after(function(done) {
+          if (!User.findById(anotherId)) {
+            return done();
+          }
+          User.remove({ _id: anotherId }, function(err) {
+            if (err) {
+              return done(err);
+            }
+          });
+          done();
+        });
+
+        it('returns a forbidden error', function(done) {
+          request
+            .delete(url + '/' + anotherId)
+            .auth(username, password)
+            .end(function(err, res) {
+              expect(err).to.exist;
+              expect(err).to.have.property('status', 403);
               done();
             });
         });
