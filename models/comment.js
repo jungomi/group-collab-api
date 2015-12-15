@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var immutablePlugin = require('mongoose-immutable');
 
 var Comment = new Schema({
   title: {
@@ -9,7 +10,8 @@ var Comment = new Schema({
   text: String,
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    immutable: true
   },
   date: {
     type: Date,
@@ -17,7 +19,8 @@ var Comment = new Schema({
   },
   task: {
     type: Schema.Types.ObjectId,
-    ref: 'Task'
+    ref: 'Task',
+    immutable: true
   }
 },
 {
@@ -27,5 +30,5 @@ var Comment = new Schema({
   }
 });
 
+Comment.plugin(immutablePlugin);
 module.exports = mongoose.model('Comment', Comment);
-

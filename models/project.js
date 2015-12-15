@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var immutablePlugin = require('mongoose-immutable');
 
 var Project = new Schema({
   name: {
@@ -12,7 +13,8 @@ var Project = new Schema({
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    immutable: true
   },
   members: [{
     type: Schema.Types.ObjectId,
@@ -26,5 +28,5 @@ var Project = new Schema({
   }
 });
 
+Project.plugin(immutablePlugin);
 module.exports = mongoose.model('Project', Project);
-

@@ -1,12 +1,14 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
+var immutablePlugin = require('mongoose-immutable');
 
 var User = new Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    immutable: true
   },
   password: {
     type: String,
@@ -47,5 +49,5 @@ User.methods.verifyPassword = function(password, callback) {
   });
 };
 
+User.plugin(immutablePlugin);
 module.exports = mongoose.model('User', User);
-
