@@ -15,28 +15,28 @@ alreadyJoined.status = 409;
 
 function deepPopulateComment(comment, next) {
   Comment
-  .populate(comment, 'user task', function(err, _commentWithTask) {
-    if (err) {
-      return next(err);
-    }
-    Comment.populate(_commentWithTask, {
-      path: 'task.project',
-      model: 'Project'
-    }, function(err, _commentWithProject) {
+    .populate(comment, 'user task', function(err, _commentWithTask) {
       if (err) {
         return next(err);
       }
-      Comment.populate(_commentWithProject, {
-        path: 'task.project.owner task.project.members',
-        model: 'User'
-      }, function(err, comment) {
+      Comment.populate(_commentWithTask, {
+        path: 'task.project',
+        model: 'Project'
+      }, function(err, _commentWithProject) {
         if (err) {
           return next(err);
         }
-        return next(null, comment);
+        Comment.populate(_commentWithProject, {
+          path: 'task.project.owner task.project.members task.assignedUsers task.owner',
+          model: 'User'
+        }, function(err, comment) {
+          if (err) {
+            return next(err);
+          }
+          return next(null, comment);
+        });
       });
     });
-  });
 }
 
 function isTaskInProject(task, project_id) {
