@@ -124,7 +124,20 @@ module.exports.updateNote = function(req, res, note_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.json({ note: note });
+          Note.populate(note, 'owner assignedUsers project', function(err, note) {
+            if (err) {
+              return next(err);
+            }
+            Note.populate(_task, {
+              path: 'project.owner project.members',
+              model: 'User',
+            }, function(err, task) {
+              if (err) {
+                return next(err);
+              }
+              return res.json({ note: note });
+            });
+          });
         });
       });
     });

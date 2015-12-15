@@ -148,7 +148,12 @@ module.exports.updateComment = function(req, res, comment_id, task_id, project_i
           if (err) {
             return next(err);
           }
-          return res.json({ comment: comment });
+          deepPopulateComment(comment, function(err, comment) {
+            if (err) {
+              return next(err);
+            }
+            return res.json({ comment: comment });
+          });
         });
       });
     });

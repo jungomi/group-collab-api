@@ -124,7 +124,20 @@ module.exports.updateTask = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.json({ task: task });
+          Task.populate(task, 'owner assignedUsers project', function(err, _task) {
+            if (err) {
+              return next(err);
+            }
+            Task.populate(_task, {
+              path: 'project.owner project.members',
+              model: 'User',
+            }, function(err, task) {
+              if (err) {
+                return next(err);
+              }
+              return res.json({ task: task });
+            });
+          });
         });
       });
     });
