@@ -2,6 +2,7 @@ var _ = require('lodash');
 var mongoose = require('mongoose');
 var Task = require('../../models/task');
 var Project = require('../../models/project');
+var Comment = require('../../models/comment');
 
 var notMember = new Error('Not member');
 notMember.status = 400;
@@ -124,7 +125,20 @@ module.exports.updateTask = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.json({ task: task });
+          Task.populate(task, 'owner assignedUsers project', function(err, _task) {
+            if (err) {
+              return next(err);
+            }
+            Task.populate(_task, {
+              path: 'project.owner project.members',
+              model: 'User',
+            }, function(err, task) {
+              if (err) {
+                return next(err);
+              }
+              return res.json({ task: task });
+            });
+          });
         });
       });
     });
@@ -159,8 +173,13 @@ module.exports.deleteTask = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          return res.sendStatus(200);
+          Comment.remove({ task: task_id }, function(err) {
+            if (err) {
+              return next(err);
+            }
+          });
         });
+        return res.sendStatus(204);
       });
     });
 };
@@ -241,3 +260,25 @@ module.exports.leaveTask = function(req, res, task_id, project_id, next) {
     });
 };
 
+module.exports.leaveAll = function(user_id, next) {
+  Task
+    .find({ assignedUsers: user_id })
+    .exec(function(err, tasks) {
+      if (err) {
+        return next(err);
+      }
+      if (!tasks) return next(notFound);
+      _.each(tasks, function(task) {
+        _.remove(task.assignedUsers, function(member) {
+          return member == user_id;
+        });
+        task.markModified('assignedUsers');
+        task.save(function(err) {
+          if (err) {
+            return next(err);
+          }
+        });
+      });
+      return next();
+    });
+};

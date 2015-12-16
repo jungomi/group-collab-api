@@ -15,28 +15,28 @@ alreadyJoined.status = 409;
 
 function deepPopulateComment(comment, next) {
   Comment
-  .populate(comment, 'user task', function(err, _commentWithTask) {
-    if (err) {
-      return next(err);
-    }
-    Comment.populate(_commentWithTask, {
-      path: 'task.project',
-      model: 'Project'
-    }, function(err, _commentWithProject) {
+    .populate(comment, 'user task', function(err, _commentWithTask) {
       if (err) {
         return next(err);
       }
-      Comment.populate(_commentWithProject, {
-        path: 'task.project.owner task.project.members',
-        model: 'User'
-      }, function(err, comment) {
+      Comment.populate(_commentWithTask, {
+        path: 'task.project',
+        model: 'Project'
+      }, function(err, _commentWithProject) {
         if (err) {
           return next(err);
         }
-        return next(null, comment);
+        Comment.populate(_commentWithProject, {
+          path: 'task.project.owner task.project.members task.assignedUsers task.owner',
+          model: 'User'
+        }, function(err, comment) {
+          if (err) {
+            return next(err);
+          }
+          return next(null, comment);
+        });
       });
     });
-  });
 }
 
 function isTaskInProject(task, project_id) {
@@ -50,8 +50,10 @@ function isProjectVisible(project, user) {
 }
 
 module.exports.addComment = function(req, res, task_id, project_id, next) {
+  var filter = { _id: task_id };
+  if (project_id) filter.project = project_id;
   Task
-    .findOne({ _id: task_id, project: project_id })
+    .findOne(filter)
     .populate('owner assignedUsers project')
     .exec(function(err, _task) {
       if (err) {
@@ -74,7 +76,7 @@ module.exports.addComment = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          Comment.populate(comment, 'user', function(err, comment) {
+          deepPopulateComment(comment, function(err, comment) {
             comment.task = task;
             return res.status(201).json({ comment: comment });
           });
@@ -148,7 +150,12 @@ module.exports.updateComment = function(req, res, comment_id, task_id, project_i
           if (err) {
             return next(err);
           }
-          return res.json({ comment: comment });
+          deepPopulateComment(comment, function(err, comment) {
+            if (err) {
+              return next(err);
+            }
+            return res.json({ comment: comment });
+          });
         });
       });
     });
