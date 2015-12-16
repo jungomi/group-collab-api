@@ -7,6 +7,8 @@ var notMember = new Error('Not member');
 notMember.status = 400;
 var notFound = new Error('Not Found');
 notFound.status = 404;
+var alreadyJoined = new Error('Already joined');
+alreadyJoined.status = 409;
 
 function isProjectVisible(project, user) {
   return project.isPublic || project.owner.username === user.username ||
@@ -121,7 +123,7 @@ module.exports.joinProject = function(req, res, id, next) {
       }
       if (!project) return res.sendStatus(404);
       if (_.some(project.members, 'username', req.user.username)) {
-        return res.send('Already joined');
+        return next(alreadyJoined);
       }
       project.members.push(req.user);
       project.save(function(err) {
@@ -143,7 +145,7 @@ module.exports.leaveProject = function(req, res, id, next) {
       }
       if (!project) return res.sendStatus(404);
       var isMember = _.some(project.members, 'username', req.user.username);
-      if (!isMember) return res.send('Not member');
+      if (!isMember) return next(notMember);
       _.remove(project.members, function(user) {
         return user.username === req.user.username;
       });
