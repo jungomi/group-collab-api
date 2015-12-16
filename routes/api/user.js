@@ -1,6 +1,12 @@
 var _ = require('lodash');
 var mongoose = require('mongoose');
 var User = require('../../models/user');
+var Project = require('../../models/project');
+var projects = require('./project');
+var Task = require('../../models/task');
+var tasks = require('./task');
+var Note = require('../../models/note');
+var Comment = require('../../models/comment');
 
 module.exports.addUser = function(req, res, next) {
   var user = new User(req.body.user);
@@ -67,8 +73,42 @@ module.exports.deleteUser = function(req, res, id, next) {
     }
     if (!user) return res.sendStatus(404);
     if (user.username !== req.user.username) return res.sendStatus(403);
-    user.remove();
-    res.sendStatus(204);
+    user.remove(function(err) {
+      if (err) {
+        return next(err);
+      }
+      Project.remove({ owner: id }, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+      projects.leaveAll(id, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+      Task.remove({ owner: id }, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+      tasks.leaveAll(id, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+      Note.remove({ owner: id }, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+      Comment.remove({ user: id }, function(err) {
+        if (err) {
+          return next(err);
+        }
+      });
+    });
+    return res.sendStatus(204);
   });
 };
 
