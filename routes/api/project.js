@@ -69,7 +69,9 @@ module.exports.updateProject = function(req, res, id, next) {
         if (err) {
           return next(err);
         }
-        res.json({project: project});
+        Project.populate(project, 'owner members', function(err, project) {
+          return res.json({project: project});
+        });
       });
     });
 };
