@@ -228,6 +228,12 @@ router.route('/comments')
   });
 
 router.route('/tasks/:task_id/comments')
+  .post(auth.authenticate, function(req, res, next) {
+    if (!isIdValid(req.params.task_id)) {
+      return res.sendStatus(404);
+    }
+    comments.addComment(req, res, req.params.task_id, null, next);
+  })
   .get(auth.authenticate, function(req, res, next) {
     if (!isIdValid(req.params.task_id)) return next(notFound);
     comments.getComments(req, res, req.params.task_id, null, next);

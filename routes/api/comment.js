@@ -50,8 +50,10 @@ function isProjectVisible(project, user) {
 }
 
 module.exports.addComment = function(req, res, task_id, project_id, next) {
+  var filter = { _id: task_id };
+  if (project_id) filter.project = project_id;
   Task
-    .findOne({ _id: task_id, project: project_id })
+    .findOne(filter)
     .populate('owner assignedUsers project')
     .exec(function(err, _task) {
       if (err) {
@@ -74,7 +76,7 @@ module.exports.addComment = function(req, res, task_id, project_id, next) {
           if (err) {
             return next(err);
           }
-          Comment.populate(comment, 'user', function(err, comment) {
+          deepPopulateComment(comment, function(err, comment) {
             comment.task = task;
             return res.status(201).json({ comment: comment });
           });
