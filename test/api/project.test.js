@@ -469,7 +469,7 @@ describe('membership', function() {
           .auth(username, password)
           .end(function(err, res) {
             expect(err).to.not.exist;
-            expect(res).to.have.property('status', 200);
+            expect(res).to.have.property('status', 204);
             done();
           });
       });

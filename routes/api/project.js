@@ -154,7 +154,7 @@ module.exports.leaveProject = function(req, res, id, next) {
         if (err) {
           return next(err);
         }
-        res.sendStatus(200);
+        return res.sendStatus(204);
       });
     });
 };
