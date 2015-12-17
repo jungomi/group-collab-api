@@ -1,12 +1,19 @@
 {
   "name": "group-collab-api",
   "version": "0.0.0",
+  "description": "Group Collaboration RESTful API",
   "private": true,
+  "apidoc": {
+    "name": "group-collab-api",
+    "description": "Group Collaboration RESTful API",
+    "title": "Group Collaboration API"
+  },
   "scripts": {
     "start": "node ./bin/www",
     "test": "./node_modules/.bin/mocha test --recursive -R spec",
     "test:api": "./node_modules/.bin/mocha test/api -R spec",
-    "test:file": "./node_modules/.bin/mocha -R spec"
+    "test:file": "./node_modules/.bin/mocha -R spec",
+    "apidoc": "./node_modules/.bin/apidoc -i routes/ -o doc/"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -25,6 +32,7 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "apidoc": "0.14.0",
     "chai": "3.4.1",
     "mocha": "2.3.4",
     "superagent": "1.5.0"
