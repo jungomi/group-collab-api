@@ -67,49 +67,50 @@ describe('/projects', function() {
             });
         });
       });
+  });
 
-    describe('POST', function() {
-      describe('with incorrect credentials', function() {
-        it('returns an unauthorized error', function(done) {
+  describe('POST', function() {
+    describe('with incorrect credentials', function() {
+      it('returns an unauthorized error', function(done) {
+        request
+          .post(url)
+          .end(function(err, res) {
+            expect(err).to.exist;
+            expect(err).to.have.property('status', 401);
+            done();
+          });
+      });
+    });
+
+    describe('with correct credentials', function() {
+      describe('with missing informations', function() {
+        it('returns a validation error', function(done) {
           request
             .post(url)
+            .auth(username, password)
+            .send({ project: {} })
             .end(function(err, res) {
               expect(err).to.exist;
-              expect(err).to.have.property('status', 401);
+              expect(err).to.have.property('status', 500);
               done();
             });
         });
       });
 
-      describe('with correct credentials', function() {
-        describe('with missing informations', function() {
-          it('returns a validation error', function(done) {
-            request
-              .post(url)
-              .auth(username, password)
-              .send({ project: {} })
-              .end(function(err, res) {
-                expect(err).to.exist;
-                expect(err).to.have.property('status', 500);
-                done();
-              });
-          });
-        });
-
-        describe('with complete informations', function() {
-          it('returns the created created project', function(done) {
-            request
-              .post(url)
-              .send({ project: { name: name } })
-              .end(function(err, res) {
-                expect(err).to.not.exist;
-                expect(res).to.have.property('status', 201);
-                expect(res).to.have.property('body')
-                  .that.has.property('project');
-                expect(res.body.project).to.have.property('name', name);
-              });
-              done();
-          });
+      describe('with complete informations', function() {
+        it('returns the created created project', function(done) {
+          request
+            .post(url)
+            .auth(username, password)
+            .send({ project: { name: name } })
+            .end(function(err, res) {
+              expect(err).to.not.exist;
+              expect(res).to.have.property('status', 201);
+              expect(res).to.have.property('body')
+                .that.has.property('project');
+              expect(res.body.project).to.have.property('name', name);
+            });
+            done();
         });
       });
     });
