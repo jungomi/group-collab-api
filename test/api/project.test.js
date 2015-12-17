@@ -35,8 +35,7 @@ describe('/projects', function() {
         }
       });
     }
-    server.close();
-    done();
+    server.close(done);
   });
 
   describe('GET', function() {
@@ -178,8 +177,7 @@ describe('/projects/:project_id', function() {
         return done(err);
       }
     });
-    server.close();
-    done();
+    server.close(done);
   });
 
   describe('GET', function() {
@@ -405,8 +403,7 @@ describe('membership', function() {
         return done(err);
       }
     });
-    server.close();
-    done();
+    server.close(done);
   });
 
   describe('/join', function() {
