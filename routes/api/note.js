@@ -128,10 +128,10 @@ module.exports.updateNote = function(req, res, note_id, project_id, next) {
             if (err) {
               return next(err);
             }
-            Note.populate(_task, {
+            Note.populate(_note, {
               path: 'project.owner project.members',
               model: 'User',
-            }, function(err, task) {
+            }, function(err, note) {
               if (err) {
                 return next(err);
               }
